@@ -1,0 +1,22 @@
+[
+  {"type": "platform", "pos": [0, 0, 0], "size": [20, 1, 14]},
+  {"type": "platform", "pos": [10, 2, 3], "size": [6, 1, 5]},
+  {"type": "platform", "pos": [18, 4, 0], "size": [6, 1, 6], "moving": true, "from": [18, 4, -3], "to": [18, 4, 5]},
+  {"type": "platform", "pos": [26, 2, 2], "size": [8, 1, 8]},
+  {"type": "platform", "pos": [36, 0, 0], "size": [16, 1, 12]},
+  {"type": "pipe", "pos": [14, 0, 2]},
+  {"type": "pipe", "pos": [30, 0, -2]},
+  {"type": "enemy", "pos": [5, 1, 0], "patrol": [2, 8]},
+  {"type": "enemy", "pos": [26, 3, 2], "patrol": [24, 30]},
+  {"type": "coin", "pos": [0, 2, 0]},
+  {"type": "coin", "pos": [10, 3.5, 3]},
+  {"type": "coin", "pos": [11, 3.5, 3]},
+  {"type": "coin", "pos": [18, 5.5, 0]},
+  {"type": "coin", "pos": [26, 3.5, 2]},
+  {"type": "coin", "pos": [27, 3.5, 2]},
+  {"type": "coin", "pos": [36, 2, 0]},
+  {"type": "coin", "pos": [37, 2, 1]},
+  {"type": "coin", "pos": [38, 2, 0]},
+  {"type": "coin", "pos": [39, 2, -1]},
+  {"type": "finish", "pos": [42, 1, 0]}
+]
