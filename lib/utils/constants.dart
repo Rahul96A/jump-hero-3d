@@ -18,8 +18,8 @@ class GameConstants {
   // Player
   static const double playerHeight = 1.8;
   static const double playerRadius = 0.4;
-  static const Vector3 playerStart = Vector3(0, 2, 0);
-  static const Vector3 checkpointStart = Vector3(0, 2, 0);
+  static final Vector3 playerStart = Vector3(0, 2, 0);
+  static final Vector3 checkpointStart = Vector3(0, 2, 0);
 
   // Camera
   static final Vector3 cameraOffset = Vector3(0, 3.5, -6.5);

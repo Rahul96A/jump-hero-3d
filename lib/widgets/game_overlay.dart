@@ -32,11 +32,11 @@ class _GameOverlayState extends State<GameOverlay> {
                 children: [
                   _hudCard(
                     children: [
-                      _hudItem(Icons.monetization_on, Colors.amber, '${widget.game.world.player.coins} / 10'),
+                      _hudItem(Icons.monetization_on, Colors.amber, '${widget.game.gameWorld.player.coins} / 10'),
                       const SizedBox(width: 12),
-                      _hudItem(Icons.favorite, Colors.red, 'x${widget.game.world.player.lives}'),
+                      _hudItem(Icons.favorite, Colors.red, 'x${widget.game.gameWorld.player.lives}'),
                       const SizedBox(width: 12),
-                      _hudItem(Icons.star, Colors.yellow, '${widget.game.world.player.score}'),
+                      _hudItem(Icons.star, Colors.yellow, '${widget.game.gameWorld.player.score}'),
                     ],
                   ),
                   Row(
@@ -44,19 +44,19 @@ class _GameOverlayState extends State<GameOverlay> {
                       IconButton(
                         onPressed: () {
                           setState(() {
-                            if (widget.game.world.status == GameStatus.paused) {
-                              widget.game.world.status = GameStatus.playing;
+                            if (widget.game.gameWorld.status == GameStatus.paused) {
+                              widget.game.gameWorld.status = GameStatus.playing;
                             } else {
-                              widget.game.world.status = GameStatus.paused;
+                              widget.game.gameWorld.status = GameStatus.paused;
                             }
                           });
                         },
-                        icon: Icon(widget.game.world.status == GameStatus.paused ? Icons.play_arrow : Icons.pause, color: Colors.white),
+                        icon: Icon(widget.game.gameWorld.status == GameStatus.paused ? Icons.play_arrow : Icons.pause, color: Colors.white),
                         style: IconButton.styleFrom(backgroundColor: Colors.black54),
                       ),
                       const SizedBox(width: 8),
                       IconButton(
-                        onPressed: () => widget.game.world.reset(),
+                        onPressed: () => widget.game.gameWorld.reset(),
                         icon: const Icon(Icons.refresh, color: Colors.white),
                         style: IconButton.styleFrom(backgroundColor: Colors.black54),
                       ),
@@ -157,9 +157,9 @@ class _GameOverlayState extends State<GameOverlay> {
         ),
 
         // Game State Overlays
-        if (widget.game.world.status == GameStatus.paused) _pauseMenu(),
-        if (widget.game.world.status == GameStatus.gameOver) _gameOverMenu(),
-        if (widget.game.world.status == GameStatus.levelComplete) _levelCompleteMenu(),
+        if (widget.game.gameWorld.status == GameStatus.paused) _pauseMenu(),
+        if (widget.game.gameWorld.status == GameStatus.gameOver) _gameOverMenu(),
+        if (widget.game.gameWorld.status == GameStatus.levelComplete) _levelCompleteMenu(),
       ],
     );
   }
@@ -195,9 +195,9 @@ class _GameOverlayState extends State<GameOverlay> {
               children: [
                 const Text('PAUSED', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 16),
-                ElevatedButton(onPressed: () => setState(() => widget.game.world.status = GameStatus.playing), child: const Text('Resume')),
+                ElevatedButton(onPressed: () => setState(() => widget.game.gameWorld.status = GameStatus.playing), child: const Text('Resume')),
                 const SizedBox(height: 8),
-                ElevatedButton(onPressed: () => widget.game.world.reset(), child: const Text('Restart Level')),
+                ElevatedButton(onPressed: () => widget.game.gameWorld.reset(), child: const Text('Restart Level')),
               ],
             ),
           ),
@@ -218,9 +218,9 @@ class _GameOverlayState extends State<GameOverlay> {
               children: [
                 const Text('GAME OVER', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.red)),
                 const SizedBox(height: 12),
-                Text('Score: ${widget.game.world.player.score}', style: const TextStyle(fontSize: 18)),
+                Text('Score: ${widget.game.gameWorld.player.score}', style: const TextStyle(fontSize: 18)),
                 const SizedBox(height: 20),
-                ElevatedButton(onPressed: () => widget.game.world.reset(), child: const Text('Try Again')),
+                ElevatedButton(onPressed: () => widget.game.gameWorld.reset(), child: const Text('Try Again')),
               ],
             ),
           ),
@@ -242,12 +242,12 @@ class _GameOverlayState extends State<GameOverlay> {
               children: [
                 const Text('LEVEL COMPLETE!', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.green)),
                 const SizedBox(height: 12),
-                Text('Coins: ${widget.game.world.player.coins}/10', style: const TextStyle(fontSize: 16)),
-                Text('Score: ${widget.game.world.player.score}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('Coins: ${widget.game.gameWorld.player.coins}/10', style: const TextStyle(fontSize: 16)),
+                Text('Score: ${widget.game.gameWorld.player.score}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
-                Text(widget.game.world.allCoinsCollected ? 'Perfect! All coins!' : 'Good run!', style: TextStyle(color: Colors.grey[600])),
+                Text(widget.game.gameWorld.allCoinsCollected ? 'Perfect! All coins!' : 'Good run!', style: TextStyle(color: Colors.grey[600])),
                 const SizedBox(height: 20),
-                ElevatedButton(onPressed: () => widget.game.world.reset(), child: const Text('Play Again')),
+                ElevatedButton(onPressed: () => widget.game.gameWorld.reset(), child: const Text('Play Again')),
               ],
             ),
           ),

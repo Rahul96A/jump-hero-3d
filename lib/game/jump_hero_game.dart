@@ -11,35 +11,34 @@ import '../utils/constants.dart';
 import 'platform.dart';
 
 class JumpHeroGame extends FlameGame with KeyboardEvents, HasCollisionDetection, PanDetector, ScrollDetector {
-  final GameWorld world = GameWorld();
+  final GameWorld gameWorld = GameWorld();
   bool _isRunning = false;
   vm.Vector2 _moveInput = vm.Vector2.zero();
 
   bool get isRunning => _isRunning;
-  GameWorld get gameWorld => world;
 
   @override
   Future<void> onLoad() async {
-    await world.loadLevel();
+    await gameWorld.loadLevel();
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    world.update(dt);
-    world.setMoveInput(_moveInput, _isRunning);
+    gameWorld.update(dt);
+    gameWorld.setMoveInput(_moveInput, _isRunning);
   }
 
   // --- 3D Projection Helpers ---
   vm.Vector2? project3D(vm.Vector3 worldPos, Size screenSize) {
-    final camPos = world.camera.position;
+    final camPos = gameWorld.camera.position;
     final focal = GameConstants.focalLength;
 
     final rel = worldPos - camPos;
     
     // Simple perspective with camera looking towards -Z initially? We use yaw rotation
     // Apply inverse yaw rotation to get camera space
-    final yaw = world.camera.yaw;
+    final yaw = gameWorld.camera.yaw;
     final cosYaw = math.cos(-yaw);
     final sinYaw = math.sin(-yaw);
     
@@ -67,8 +66,8 @@ class JumpHeroGame extends FlameGame with KeyboardEvents, HasCollisionDetection,
   }
 
   double depthForSorting(vm.Vector3 pos) {
-    final camPos = world.camera.position;
-    final yaw = world.camera.yaw;
+    final camPos = gameWorld.camera.position;
+    final yaw = gameWorld.camera.yaw;
     final forward = vm.Vector3(math.sin(yaw), 0, math.cos(yaw));
     return (pos - camPos).dot(forward);
   }
@@ -76,7 +75,7 @@ class JumpHeroGame extends FlameGame with KeyboardEvents, HasCollisionDetection,
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    if (world.level == null) {
+    if (gameWorld.level == null) {
       // Loading screen
       canvas.drawRect(Rect.fromLTWH(0, 0, size.x, size.y), Paint()..color = const Color(0xFF87CEEB));
       final tp = TextPainter(text: const TextSpan(text: 'Loading Jump Hero 3D...', style: TextStyle(color: Colors.white, fontSize: 24)), textDirection: TextDirection.ltr);
@@ -99,20 +98,20 @@ class JumpHeroGame extends FlameGame with KeyboardEvents, HasCollisionDetection,
     // Collect all renderables for depth sorting (far to near)
     final List<_RenderItem> items = [];
 
-    for (final p in world.level!.platforms) {
+    for (final p in gameWorld.level!.platforms) {
       items.add(_RenderItem(pos: p.position, type: _RenderType.platform, ref: p, depth: depthForSorting(p.position)));
     }
-    for (final pipe in world.level!.pipes) {
+    for (final pipe in gameWorld.level!.pipes) {
       items.add(_RenderItem(pos: pipe.position, type: _RenderType.pipe, ref: pipe, depth: depthForSorting(pipe.position)));
     }
-    for (final coin in world.level!.coins) {
+    for (final coin in gameWorld.level!.coins) {
       if (!coin.collected) items.add(_RenderItem(pos: coin.position, type: _RenderType.coin, ref: coin, depth: depthForSorting(coin.position)));
     }
-    for (final enemy in world.level!.enemies) {
+    for (final enemy in gameWorld.level!.enemies) {
       items.add(_RenderItem(pos: enemy.position, type: _RenderType.enemy, ref: enemy, depth: depthForSorting(enemy.position)));
     }
-    items.add(_RenderItem(pos: world.level!.finishFlag.position, type: _RenderType.finish, depth: depthForSorting(world.level!.finishFlag.position)));
-    items.add(_RenderItem(pos: world.player.position, type: _RenderType.player, depth: depthForSorting(world.player.position)));
+    items.add(_RenderItem(pos: gameWorld.level!.finishFlag.position, type: _RenderType.finish, depth: depthForSorting(gameWorld.level!.finishFlag.position)));
+    items.add(_RenderItem(pos: gameWorld.player.position, type: _RenderType.player, depth: depthForSorting(gameWorld.player.position)));
 
     // Sort far -> near
     items.sort((a,b) => b.depth.compareTo(a.depth));
@@ -122,7 +121,7 @@ class JumpHeroGame extends FlameGame with KeyboardEvents, HasCollisionDetection,
     }
 
     // Ground shadow for player (always visible)
-    _drawShadow(canvas, world.player.position, screenSize);
+    _drawShadow(canvas, gameWorld.player.position, screenSize);
   }
 
   void _drawShadow(Canvas canvas, vm.Vector3 pos, Size screenSize) {
@@ -252,7 +251,7 @@ class JumpHeroGame extends FlameGame with KeyboardEvents, HasCollisionDetection,
   }
 
   void _drawPlayer(Canvas canvas, vm.Vector2 proj, double scale, double focalScale) {
-    final player = world.player;
+    final player = gameWorld.player;
     final h = GameConstants.playerHeight * focalScale * 0.9;
     final w = 14 * scale * 3;
 
@@ -295,7 +294,7 @@ class JumpHeroGame extends FlameGame with KeyboardEvents, HasCollisionDetection,
         }
       }
     }
-    if (world.level!.finishFlag.reached) {
+    if (gameWorld.level!.finishFlag.reached) {
       canvas.drawCircle(Offset(proj.x, proj.y - h*0.8), 30*scale, Paint()..color = Colors.yellow.withOpacity(0.4));
     }
   }
@@ -323,10 +322,10 @@ class JumpHeroGame extends FlameGame with KeyboardEvents, HasCollisionDetection,
 
     if (event is KeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.space) {
-        world.jump();
+        gameWorld.jump();
       }
       if (event.logicalKey == LogicalKeyboardKey.keyQ) {
-        world.groundPound();
+        gameWorld.groundPound();
       }
     }
 
@@ -348,7 +347,7 @@ class JumpHeroGame extends FlameGame with KeyboardEvents, HasCollisionDetection,
       final delta = current - _lastPan!;
       // Only orbit if dragging on right half
       if (current.x > size.x * 0.5) {
-        world.orbitCamera(delta.x, -delta.y);
+        gameWorld.orbitCamera(delta.x, -delta.y);
       }
     }
     _lastPan = current;
@@ -361,7 +360,7 @@ class JumpHeroGame extends FlameGame with KeyboardEvents, HasCollisionDetection,
 
   @override
   void onScroll(PointerScrollInfo info) {
-    world.zoomCamera(info.scrollDelta.global.y * 0.01);
+    gameWorld.zoomCamera(info.scrollDelta.global.y * 0.01);
   }
 
   // External API for overlay joystick
@@ -373,8 +372,8 @@ class JumpHeroGame extends FlameGame with KeyboardEvents, HasCollisionDetection,
     _isRunning = running;
   }
 
-  void jumpPressed() => world.jump();
-  void groundPoundPressed() => world.groundPound();
+  void jumpPressed() => gameWorld.jump();
+  void groundPoundPressed() => gameWorld.groundPound();
 }
 
 enum _RenderType { platform, pipe, coin, enemy, player, finish }
