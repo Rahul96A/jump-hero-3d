@@ -13,9 +13,6 @@ dependencies:
   flame: ^1.18.0
   flutter_joystick: ^0.2.2
   vector_math: ^2.1.4
-  flutter_riverpod: ^2.5.1
-  audioplayers: ^6.1.0
-  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:
