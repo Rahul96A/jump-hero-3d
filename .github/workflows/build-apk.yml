@@ -10,23 +10,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
-      
+
+      # flutter_3d_controller >=2.2.0 needs Dart >=3.6, which ships with
+      # Flutter 3.27+. Track the latest stable instead of pinning an old SDK.
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'
           channel: 'stable'
-      
+          cache: true
+
+      # The repo only tracks lib/ and pubspec.yaml; generate the Android
+      # host project on the runner. Existing files are left untouched.
+      - name: Generate Android project
+        run: flutter create . --platforms android --project-name jump_hero_3d --org com.rahul96a
+
       - name: Get dependencies
         run: flutter pub get
-      
+
       - name: Build APK Release
         run: flutter build apk --release --split-per-abi
-      
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:

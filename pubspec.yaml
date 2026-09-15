@@ -26,6 +26,4 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/models/
-    - assets/audio/
     - lib/levels/level_1.json
